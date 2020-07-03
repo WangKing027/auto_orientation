@@ -28,7 +28,7 @@ public class AutoOrientationPlugin implements FlutterPlugin, MethodCallHandler ,
         instance.onAttachedToEngine(registrar.messenger());
     }
 
-    private AutoOrientationPlugin() {}
+    public AutoOrientationPlugin() {}
 
     @Override
     public void onMethodCall(MethodCall call, Result result) {
