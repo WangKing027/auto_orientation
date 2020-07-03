@@ -7,6 +7,8 @@ import android.os.Build;
 import androidx.annotation.NonNull;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.embedding.engine.plugins.activity.ActivityAware;
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -15,20 +17,18 @@ import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 /** AutoOrientationPlugin */
-public class AutoOrientationPlugin implements FlutterPlugin, MethodCallHandler {
+public class AutoOrientationPlugin implements FlutterPlugin, MethodCallHandler , ActivityAware {
 
     private Activity activity;
     private MethodChannel methodChannel ;
 
     /** Plugin registration. */
     public static void registerWith(Registrar registrar) {
-        final AutoOrientationPlugin instance = new AutoOrientationPlugin(registrar.activity());
+        final AutoOrientationPlugin instance = new AutoOrientationPlugin();
         instance.onAttachedToEngine(registrar.messenger());
     }
 
-    private AutoOrientationPlugin(Activity activity) {
-        this.activity = activity;
-    }
+    private AutoOrientationPlugin() {}
 
     @Override
     public void onMethodCall(MethodCall call, Result result) {
@@ -86,7 +86,21 @@ public class AutoOrientationPlugin implements FlutterPlugin, MethodCallHandler {
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
         methodChannel.setMethodCallHandler(null);
         methodChannel = null ;
-        activity = null ;
     }
 
+    @Override
+    public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
+        this.activity = binding.getActivity();
+    }
+
+    @Override
+    public void onDetachedFromActivityForConfigChanges() {}
+
+    @Override
+    public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding binding) {
+        this.activity = binding.getActivity();
+    }
+
+    @Override
+    public void onDetachedFromActivity() {}
 }
